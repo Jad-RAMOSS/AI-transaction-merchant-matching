@@ -28,14 +28,17 @@ def embedded(data_path, tokenizer, batch_size=16):
     # Load and clean data
     test_data = pd.read_excel(data_path)
     test_data = test_data[test_data['Description'].apply(lambda x: isinstance(x, str))]
-    test_data.dropna(subset=['Description', 'Rep'], inplace=True)
+    test_data.dropna(subset=['Description'], inplace=True)
 
     # Prepare inputs
     descriptions = test_data['Description'].astype(str).tolist()
-    actual_reps = test_data['Rep'].astype(str).tolist()
+    dates = test_data['Value Date'].tolist() if 'Date' in test_data.columns else [''] * len(test_data)
+    amounts = test_data['Amount'].tolist() if 'Amount' in test_data.columns else [''] * len(test_data)
+
+    # actual_reps = test_data['Rep'].astype(str).tolist()
 
     encodings = tokenizer(descriptions, truncation=True, padding=True, return_tensors='pt')
-    dataset = TextDataset(encodings, descriptions)
+    dataset = TextDataset(encodings, descriptions,dates,amounts)
     loader = DataLoader(dataset, batch_size=batch_size)
     return loader
 

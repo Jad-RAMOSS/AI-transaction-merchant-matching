@@ -3,16 +3,17 @@ import joblib
 import torch
 
 
-model_path="D:/projects/Transaction-Matching/saved model"
-encoder_path="D:/projects/Transaction-Matching/saved model/label_encoder.pkl"
+# model_path="D:/projects/Transaction-Matching/saved model"
+# encoder_path="D:/projects/Transaction-Matching/saved model/label_encoder.pkl"
 
 def call_model(model_path,encoder_path):
     model = BertForSequenceClassification.from_pretrained(model_path, local_files_only=True)
     tokenizer = BertTokenizer.from_pretrained(model_path, local_files_only=True)
-    le2 = joblib.load(encoder_path)
+    le = joblib.load(encoder_path)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
     model.to(device)
+    return model,tokenizer,le
 
 
 def predict(model,data_loader):
