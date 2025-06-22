@@ -23,5 +23,14 @@ def clean_data(data_path):
     return data
 
 
-print(clean_data(data_path))
+def clean_pre_data(data_path):
+    data=pd.read_excel(data_path)
+    ##DROP INSTA AND NULL
+    data = data[data['Description'].apply(lambda x: isinstance(x, str))]
+    data = data[~data['Description'].str.contains('IPN', case=False)]
+
+    ## Description
+    data['Description'] = data['Description'].str.replace(r'^.*?(?:\|| {3,})', '', regex=True)
+
+    return data
 

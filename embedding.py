@@ -1,8 +1,7 @@
 
 import pandas as pd
-import torch
 from torch.utils.data import DataLoader,Dataset
-
+from clean_data import clean_pre_data
 
 class TextDataset(Dataset):
     def __init__(self, encodings, descriptions,dates,amounts):
@@ -26,7 +25,7 @@ class TextDataset(Dataset):
 
 def embedded(data_path, tokenizer, batch_size=16):
     # Load and clean data
-    test_data = pd.read_excel(data_path)
+    test_data = clean_pre_data(data_path)
     test_data = test_data[test_data['Description'].apply(lambda x: isinstance(x, str))]
     test_data.dropna(subset=['Description'], inplace=True)
 
