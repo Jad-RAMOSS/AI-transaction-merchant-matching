@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# Data files
+data/Test/*.xlsx
+data/Raw/*.xlsx
+data/Cleaned/*.xlsx
+output/*.xlsx
+
 # Distribution / packaging
 .Python
 build/
