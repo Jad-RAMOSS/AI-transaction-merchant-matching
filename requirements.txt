@@ -3,3 +3,11 @@ transformers
 pandas
 openpyxl
 joblib
+sqlalchemy
+urllib3
+python-dateutil
+pytz
+fastapi
+uvicorn
+python-multipart
+python-dotenv
