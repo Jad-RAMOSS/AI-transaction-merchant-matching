@@ -1,3 +1,5 @@
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -6,11 +8,15 @@ __pycache__/
 # C extensions
 *.so
 
+# Saved model
+saved model
+
 # Data files
 data/Test/*.xlsx
 data/Raw/*.xlsx
 data/Cleaned/*.xlsx
 output/*.xlsx
+output/*.csv
 
 # Distribution / packaging
 .Python
