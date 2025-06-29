@@ -9,7 +9,7 @@ import urllib.parse
 
 
 def main():
-    data_path='C:\\AI Merchant Transaction Matching\\BERT_api\\data\Test\\NBE & BM 25-6-2025.xlsx'
+    data_path='C:\\AI Merchant Transaction Matching\\BERT_api\\data\Test\\NBE & BM 25-6-2025(model_answer).xlsx'
     model_path="C:\\AI Merchant Transaction Matching\\BERT_api\\saved model"
     encoder_path="C:\\AI Merchant Transaction Matching\\BERT_api\\saved model\\label_encoder.pkl"
 

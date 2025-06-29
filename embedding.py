@@ -63,15 +63,11 @@ def decoded(all_texts, all_pred, test_data, le):
     # Replace any 'NaT' strings that might occur from invalid dates with empty string
     result_df['Date'] = result_df['Date'].replace('NaT', '')
 
-    if 'Rep' in test_data.columns:
-        result_df['ManualRep'] = test_data['Rep']
+    if 'original_rep' in test_data.columns:
+        result_df['ManualRep'] = test_data['original_rep']
         result_df['ManualRep'] = result_df['ManualRep'].str.lower().str.replace(" ", "", regex=False)
         result_df['ManualRep'] = result_df['ManualRep'].str.replace(r'\s+', '', regex=True)
         result_df['is_correct'] = result_df['ManualRep'] == result_df['Rep']
-    elif 'rep' in test_data.columns:
-        result_df['ManualRep'] = test_data['rep']
-        result_df['rep'] = result_df['rep'].str.lower().str.replace(" ", "", regex=False)
-        result_df['rep'] = result_df['rep'].str.replace(r'\s+', '', regex=True)
-        result_df['is_correct'] = result_df['rep'] == result_df['Predicted_Rep']
+    
 
     return result_df

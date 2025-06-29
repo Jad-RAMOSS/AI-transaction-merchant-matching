@@ -4,6 +4,7 @@ import pandas as pd
 import tempfile
 import os
 from pipeline import process_file
+import uvicorn
 
 app = FastAPI(title="Transaction Matching API", version="1.0.0")
 
@@ -38,5 +39,5 @@ async def predict(file: UploadFile = File(...)):
 
 
 if __name__ == "__main__":
-    import uvicorn
+    
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
