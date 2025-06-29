@@ -1,39 +1,42 @@
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import JSONResponse
 import pandas as pd
-from model import call_model,predict
-from embedding import embedded,decoded
-from data_to_oracle import export_to_oracle
+import tempfile
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.types import VARCHAR, DATE, FLOAT, INTEGER
-import urllib.parse
+from pipeline import process_file
 
+app = FastAPI(title="Transaction Matching API", version="1.0.0")
 
-def main():
-    data_path='C:\\AI Merchant Transaction Matching\\LLM\\Transaction-Matching\\data\\Test\\NBE & BM 24-6-2025.xlsx'
-    model_path="C:\\AI Merchant Transaction Matching\\LLM\\Transaction-Matching\\saved model"
-    encoder_path="C:\\AI Merchant Transaction Matching\\LLM\\Transaction-Matching\\saved model\\label_encoder.pkl"
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    """Accept an Excel/CSV file, run the ML pipeline, export to Oracle, and return a summary."""
+    # Validate file type
+    if not file.filename.lower().endswith((".xlsx", ".xls", ".csv")):
+        raise HTTPException(status_code=400, detail="Only Excel or CSV files are supported.")
 
-    model,tokenizer,le =call_model(model_path,encoder_path)
-    print("================================== model succcesss =====================================")
-    data_loader, test_data = embedded(data_path,tokenizer)
-    print("================================== data_loader succcesss =====================================")
-    all_texts,all_preds,all_dates,all_amounts=predict(model,data_loader)
-    print("================================== predict succcesss =====================================")
-    result=decoded(all_texts,all_preds,test_data,le)
-    print(result)
-    file_name = os.path.basename(data_path).split('.')[0]
-    # Save to Excel and CSV
-    result.to_excel(f'C:\\AI Merchant Transaction Matching\\LLM\\Transaction-Matching\\output\\prediction_{file_name}.xlsx', index=False)
-    result.to_csv(f'C:\\AI Merchant Transaction Matching\\LLM\\Transaction-Matching\\output\\prediction_{file_name}.csv', index=False)
-    
-    # Export to Oracle Database
-    export_to_oracle(result)
+    # Save upload to a temporary file
+    suffix = os.path.splitext(file.filename)[1]
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        contents = await file.read()
+        tmp.write(contents)
+        tmp_path = tmp.name
 
-
-
-
-
+    try:
+        # Run pipeline
+        result_df: pd.DataFrame = process_file(tmp_path)
+        rows_inserted = len(result_df)
+        return JSONResponse({
+            "status": "success",
+            "rows": rows_inserted,
+            "first_rows": result_df.head(5).to_dict(orient="records")
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # Cleanup temp file
+        os.remove(tmp_path)
 
 
 if __name__ == "__main__":
-    main()
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
