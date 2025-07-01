@@ -7,7 +7,7 @@ import torch
 # encoder_path="D:/projects/Transaction-Matching/saved model/label_encoder.pkl"
 
 def call_model(model_path,encoder_path):
-    model = BertForSequenceClassification.from_pretrained(model_path, local_files_only=True)
+    model = BertForSequenceClassification.from_pretrained(model_path, local_files_only=True, from_flax=True)
     tokenizer = BertTokenizer.from_pretrained(model_path, local_files_only=True)
     le = joblib.load(encoder_path)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
