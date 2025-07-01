@@ -9,7 +9,7 @@ __pycache__/
 *.so
 
 # Saved model
-saved model
+saved_model
 
 # Data files
 data/Test/*.xlsx
