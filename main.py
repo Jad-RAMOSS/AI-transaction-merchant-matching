@@ -29,7 +29,7 @@ async def predict(file: UploadFile = File(...)):
         return JSONResponse({
             "status": "success",
             "rows": rows_inserted,
-            "first_rows": result_df.head(5).to_dict(orient="records")
+            "Predictions": result_df.to_dict(orient="records")
         })
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
