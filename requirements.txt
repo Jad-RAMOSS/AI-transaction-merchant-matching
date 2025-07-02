@@ -1,5 +1,5 @@
-# torch
-transformers
+# python==3.11.13
+transformers==4.53.0
 pandas
 openpyxl
 joblib
@@ -14,3 +14,4 @@ python-dotenv
 oracledb
 datetime
 scikit-learn
+torch
