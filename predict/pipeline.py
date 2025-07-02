@@ -34,6 +34,6 @@ def process_file(file_path: str) -> pd.DataFrame:
     result_df.to_csv(os.path.join(output_dir, f"prediction_{base_name}.csv"), index=False)
 
     # 6. Export to Oracle DB
-    export_to_oracle(result_df)
+    # export_to_oracle(result_df)
 
     return result_df
