@@ -2,9 +2,13 @@ import pandas as pd
 import os
 import glob
 from clean_data import clean_data
+from dotenv import load_dotenv 
+
+load_dotenv()
 
 # Folder containing Excel files
-folder_path = "C:\\AI Merchant Transaction Matching\\BERT_api\\data\\Raw"
+
+folder_path = os.getenv("raw_data_path")
 
 # Get all Excel files (excluding temporary files like ~$)
 excel_files = [f for f in glob.glob(os.path.join(folder_path, "*.xls*")) if not os.path.basename(f).startswith("~$")]
@@ -27,7 +31,7 @@ for file in excel_files:
 # Combine and save
 if selected_dataframes:
     combined_df = pd.concat(selected_dataframes, ignore_index=True)
-    output_file = os.path.join(folder_path, "C:\\AI Merchant Transaction Matching\\BERT_api\\data\\Raw\\combined_output.xlsx")
+    output_file = os.path.join(folder_path, "combined_output.xlsx")
     combined_df.to_excel(output_file, index=False)
     print(f"Saved combined file to: {output_file}")
     clean_data(combined_df)
