@@ -1,0 +1,47 @@
+# Files and directories to exclude from the Docker build context
+
+# Version control
+.git
+.gitignore
+
+# Python cache / build artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dylib
+*.egg-info/
+*.eggs/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Node modules (from npm init used for PM2 config)
+node_modules/
+
+# OS / editor metadata
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Logs & coverage
+*.log
+*.cover
+coverage/
+
+# Environment / secrets
+.env
+.env.*
+
+# Local data or models you mount at runtime
+saved_model/
+models/
+
+# Build / dist output
+build/
+dist/
