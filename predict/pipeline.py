@@ -5,7 +5,7 @@ from embedding import embedded, decoded
 from data_to_oracle import export_to_oracle
 
 # Paths to model artefacts (adjust if you move folders)
-MODEL_DIR = "saved_model"
+MODEL_DIR = "/home/jad/AI_Merchant_Transaction_Matching/AI-transaction-merchant-matching/predict/saved_model"
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
 
