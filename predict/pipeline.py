@@ -5,7 +5,7 @@ from embedding import embedded, decoded
 from data_to_oracle import export_to_oracle
 
 # Paths to model artefacts (adjust if you move folders)
-MODEL_DIR = os.path.join(os.getcwd(), "saved_model")
+MODEL_DIR = os.path.join("saved_model")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
 
