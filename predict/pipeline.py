@@ -15,8 +15,9 @@ def process_file(file_path: str) -> pd.DataFrame:
     Returns the resulting dataframe that was exported.
     """
     # 1. Load model & encoder
+    print("jad")
     model, tokenizer, le = call_model(MODEL_DIR, ENCODER_PATH)
-
+    print("jad2")
     # 2. Prepare data
     data_loader, test_data = embedded(file_path, tokenizer)
 
