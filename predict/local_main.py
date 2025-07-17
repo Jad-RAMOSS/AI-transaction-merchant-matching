@@ -9,15 +9,15 @@ import urllib.parse
 
 
 def main():
-    data_path='C:\\AI Merchant Transaction Matching\\BERT_api\\data\Test\\NBE & BM 25-6-2025(model_answer).xlsx'
-    model_path="C:\\AI Merchant Transaction Matching\\BERT_api\\saved model"
-    encoder_path="C:\\AI Merchant Transaction Matching\\BERT_api\\saved model\\label_encoder.pkl"
-
+    data_path='C:\\AI Merchant Transaction Matching\\BERT_api\\data\\Test\\NBE & BM 16-7-2025.xlsx'
+    model_path="C:\\AI Merchant Transaction Matching\\BERT_api\\predict\\saved_model"
+    encoder_path="C:\\AI Merchant Transaction Matching\\BERT_api\\predict\\saved_model\\label_encoder.pkl"
+    
     model,tokenizer,le =call_model(model_path,encoder_path)
     print("================================== model succcesss =====================================")
     data_loader, test_data = embedded(data_path,tokenizer)
     print("================================== data_loader succcesss =====================================")
-    all_texts,all_preds,all_dates,all_amounts=predict(model,data_loader)
+    all_texts,all_preds,all_dates,all_amounts=predict(model,data_loader,label_encoder=le, threshold=0.52, temperature=1.6)
     print("================================== predict succcesss =====================================")
     result=decoded(all_texts,all_preds,test_data,le)
     print(result)
