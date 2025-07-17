@@ -1,6 +1,7 @@
 import pandas as pd
 from torch.utils.data import DataLoader,Dataset
 from clean_data import clean_pre_data
+import math
 
 class TextDataset(Dataset):
     def __init__(self, encodings, descriptions,dates,amounts):
@@ -41,8 +42,15 @@ def embedded(data_path, tokenizer, batch_size=16):
     return loader, test_data
 
 def decoded(all_texts, all_pred, test_data, le):
-    pred_labels = le.inverse_transform(all_pred)
-    pred_labels = [str(label).lower().replace(' ', '') for label in pred_labels]
+    pred_labels = []
+    for p in all_pred:
+        if p is None or (isinstance(p, float) and math.isnan(p)):
+            pred_labels.append("unknown")
+        elif isinstance(p, str):
+            pred_labels.append(p.lower().replace(' ', ''))
+        else:
+            label = le.inverse_transform([p])[0]
+            pred_labels.append(label.lower().replace(' ', ''))
 
     # Ensure dates are in datetime format and format consistently
     date_column = 'Transaction Date' if 'Transaction Date' in test_data.columns else 'Date'
@@ -56,11 +64,9 @@ def decoded(all_texts, all_pred, test_data, le):
         'Rep': pred_labels,
         'Reference_Number': test_data['Transaction Reference No.']
     })
-    
-    # Format dates to 'YYYY-MM-DD HH:MM:SS' format in the output
-    # If time component is missing, it will be set to 00:00:00
+
+    # Format dates to 'YYYY-MM-DD HH:MM:SS'
     result_df['Date'] = result_df['Date'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    # Replace any 'NaT' strings that might occur from invalid dates with empty string
     result_df['Date'] = result_df['Date'].replace('NaT', '')
 
     if 'original_rep' in test_data.columns:
@@ -69,5 +75,5 @@ def decoded(all_texts, all_pred, test_data, le):
         result_df['ManualRep'] = result_df['ManualRep'].str.replace(r'\s+', '', regex=True)
         result_df['is_correct'] = result_df['ManualRep'] == result_df['Rep']
     
-
     return result_df
+
