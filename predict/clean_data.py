@@ -5,7 +5,7 @@ import pandas as pd
 def clean_data(data):
     ##DROP INSTA AND NULL
     data = data[data['description'].apply(lambda x: isinstance(x, str))]
-    data = data[~data['description'].str.contains('IPN', case=False)]
+    # data = data[~data['description'].str.contains('IPN', case=False)]
     
     data.dropna(subset=['description', 'rep'], inplace=True)
 
@@ -26,11 +26,14 @@ def clean_data(data):
 def clean_pre_data(data_path):
     data=pd.read_excel(data_path)
     ##DROP INSTA AND NULL
-    data = data[data['Description'].apply(lambda x: isinstance(x, str))]
-    data = data[~data['Description'].str.contains('IPN', case=False)]
+    # data = data[data['Description'].apply(lambda x: isinstance(x, str))]
+    # Exclude rows where 'Description' contains the word 'IPN' (case-insensitive).
+    # The `na=False` argument ensures that NaN/non-string values are treated as non-matches
+    # so the resulting boolean mask has no missing values (floats), allowing the `~` operator.
+    data = data[~data['Description'].str.contains('IPN', case=False, na=False)]
 
     ## Description
-    data['Description'] = data['Description'].str.replace(r'^.*?(?:\|| {3,})', '', regex=True)
+    # data['Description'] = data['Description'].str.replace(r'^.*?(?:\|| {3,})', '', regex=True)
 
     return data
 
