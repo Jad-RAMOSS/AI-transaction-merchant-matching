@@ -20,11 +20,11 @@ def process_file(file_path: str) -> pd.DataFrame:
     data_loader, test_data = embedded(file_path, tokenizer)
 
     # 3. Run predictions
-    all_texts, all_preds, all_dates, all_amounts, confidences,is_confident = predict(model, data_loader)
+    all_texts, all_preds, all_dates, all_amounts, confidences,is_confident = predict(model, data_loader, label_encoder=le, threshold=0.52, temperature=1.6)
 
     # 4. Decode predictions into final result dataframe
     result_df = decoded(all_texts, all_preds, confidences,is_confident,test_data, le)
-
+    result_df.fillna("", inplace=True)
     # 5. Persist locally (optional diagnostics)
     output_dir = os.path.join(os.getcwd(), "output")
     os.makedirs(output_dir, exist_ok=True)
