@@ -41,11 +41,12 @@ def embedded(data_path, tokenizer, batch_size=16):
     loader = DataLoader(dataset, batch_size=batch_size)
     return loader, test_data
 
-def decoded(all_texts, all_pred, test_data, le):
+def decoded(all_texts, all_pred, confidences, is_confident, test_data, le):
     pred_labels = []
-    for p in all_pred:
-        if p is None or (isinstance(p, float) and math.isnan(p)):
+    for i, p in enumerate(all_pred):
+        if p is None or (isinstance(p, float) and math.isnan(p)) or str(p).lower() == 'unknown':
             pred_labels.append("unknown")
+            is_confident[i] = "NOT_CONFIDENT"  # Set Revise to YES for unknown predictions
         elif isinstance(p, str):
             pred_labels.append(p.lower().replace(' ', ''))
         else:
@@ -59,10 +60,12 @@ def decoded(all_texts, all_pred, test_data, le):
     # Results DataFrame
     result_df = pd.DataFrame({
         'Date': dates,
+        'Reference_Number': test_data['Transaction Reference No.'],
         'Amount': test_data['Amount'],
         'Description': all_texts,
         'Rep': pred_labels,
-        'Reference_Number': test_data['Transaction Reference No.']
+        'Confidence': confidences,
+        'is_confident': is_confident
     })
 
     # Format dates to 'YYYY-MM-DD HH:MM:SS'
