@@ -20,7 +20,7 @@ def predict(model, data_loader, label_encoder, threshold=0.9, temperature=2.0):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model.eval()
-    all_preds, all_texts, all_dates, all_amounts = [], [], [], []
+    all_preds, all_texts, all_dates, all_amounts, all_confidences, is_confident = [], [], [], [], [], []
 
     with torch.no_grad():
         for batch in data_loader:
@@ -36,17 +36,22 @@ def predict(model, data_loader, label_encoder, threshold=0.9, temperature=2.0):
             max_probs, pred_indices = torch.max(probs, dim=1)
 
             for prob, idx in zip(max_probs.cpu(), pred_indices.cpu()):
+                # Convert to percentage and round to nearest integer
+                confidence_percent = round(prob.item() * 100)
+                all_confidences.append(confidence_percent)
                 if prob >= threshold:
                     pred_label = label_encoder.inverse_transform([idx.item()])[0]
+                    is_confident.append("CONFIDENT")
                 else:
-                    pred_label = "Unknown"
+                    pred_label = label_encoder.inverse_transform([idx.item()])[0]
+                    is_confident.append("NOT_CONFIDENT")
                 all_preds.append(pred_label)
 
             all_texts.extend(texts)
             all_dates.extend(batch_dates)
             all_amounts.extend(batch_amounts)
 
-    return all_texts, all_preds, all_dates, all_amounts
+    return all_texts, all_preds, all_dates, all_amounts, all_confidences, is_confident
 
 
 
