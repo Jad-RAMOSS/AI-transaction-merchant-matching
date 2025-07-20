@@ -15,17 +15,15 @@ def process_file(file_path: str) -> pd.DataFrame:
     Returns the resulting dataframe that was exported.
     """
     # 1. Load model & encoder
-    print("jad")
     model, tokenizer, le = call_model(MODEL_DIR, ENCODER_PATH)
-    print("jad2")
     # 2. Prepare data
     data_loader, test_data = embedded(file_path, tokenizer)
 
     # 3. Run predictions
-    all_texts, all_preds, *_ = predict(model, data_loader)
+    all_texts, all_preds, all_dates, all_amounts, confidences,is_confident = predict(model, data_loader)
 
     # 4. Decode predictions into final result dataframe
-    result_df = decoded(all_texts, all_preds, test_data, le)
+    result_df = decoded(all_texts, all_preds, confidences,is_confident,test_data, le)
 
     # 5. Persist locally (optional diagnostics)
     output_dir = os.path.join(os.getcwd(), "output")

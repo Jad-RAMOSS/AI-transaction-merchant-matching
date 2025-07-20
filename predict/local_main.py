@@ -17,9 +17,9 @@ def main():
     print("================================== model succcesss =====================================")
     data_loader, test_data = embedded(data_path,tokenizer)
     print("================================== data_loader succcesss =====================================")
-    all_texts,all_preds,all_dates,all_amounts=predict(model,data_loader,label_encoder=le, threshold=0.52, temperature=1.6)
+    all_texts,all_preds,all_dates,all_amounts,confidences,is_confident=predict(model,data_loader,label_encoder=le, threshold=0.52, temperature=1.6)
     print("================================== predict succcesss =====================================")
-    result=decoded(all_texts,all_preds,test_data,le)
+    result=decoded(all_texts,all_preds,confidences,is_confident,test_data,le)
     print(result)
     file_name = os.path.basename(data_path).split('.')[0]
     # Save to Excel and CSV
